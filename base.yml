@@ -1,0 +1,30 @@
+version: "3"
+services:
+  db:
+    image: mysql:5.7
+    command: |
+        --character-set-server=utf8
+        --collation-server=utf8_general_ci
+        --max-allowed-packet=16M
+        --default_authentication_plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=P@ssword
+      - MYSQL_DATABASE=ilias
+    volumes:
+      - "${VOLUMEDIR}/mysql:/var/lib/mysql"
+  webserver:
+    image: sturai/ilias:5.4-php7.3-apache
+    ports:
+      - 8000:80
+    depends_on:
+      - db
+    environment:
+      - ILIAS_DB_HOST=db
+      - ILIAS_AUTO_SETUP=1
+      - ILIAS_DB_USER=root
+      - ILIAS_DB_PASSWORD=P@ssword
+      - ILIAS_ROOT_PASSWORD=P@ssword
+      - ILIAS_SETUP_PASSWORD=P@ssword
+    volumes:
+      - "${VOLUMEDIR}/ilias:/var/www/html/data"
+      - "${VOLUMEDIR}/iliasdata:/var/iliasdata/ilias"
